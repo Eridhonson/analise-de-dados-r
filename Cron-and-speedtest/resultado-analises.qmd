@@ -1,0 +1,43 @@
+---
+title: "Implementação em sistema linux Debian 13 de teste de velocidade de internet utilizando cron e speedtest"
+author: "Eridhonson Oliveira de Moura"
+format: pdf
+editor: visual
+---
+
+## Resumo
+
+{{< lipsum 1 >}}
+
+## Abstract
+
+{{< lipsum 1 >}}
+
+## Introdução
+
+{{< lipsum 1 >}}
+
+## Metodologia
+
+{{< lipsum 1 >}}
+
+## Troubeshooting
+
+Durante a implementação do sistema conjunto utilizando cron e speedtest houve a presença marcante de um problema na obtenção dos dados. No cron foi programado que os dados de velocidade de internet, juntamente com a data e horário de realização, seriam obtidos a cada meia hora, mas por diversas vezes o arquivo final gerado exibia apenas a data e omitia os dados que deveriam ser gerados pelo speedtest.
+
+Minha primeira grande dificuldade foi encontrar um log dos cronjobs, já que eu não consegui localizar, no Debian 13, o arquivo onde deveria estar os logs segundo minhas pesquisas. O arquivo `/var/log/syslog` não existe na minha máquina.
+
+Depois de muita procura, adiei o foco nos logs e resolvi começar uma rodada de testes.
+
+Minha primeira teoria estava relacionada ao tempo de execução do cron, sendo que o speedtest demoraria mais para realizar a análise da internet do que o tempo que o cron ficaria aberto, não realizando a inserção dos dados no arquivo speedtest.txt. Minha primeira tentativa de resolver esse problema foi dividir o speedteste em duas etapas, separadas por um intervalo de um minuto, onde cada etapa ficaria responsável por apenas uma etapa do teste: a primeira faria o teste de download e a segunda o teste de upload
+
+No crontab a tarefa ficou:
+
+``` bash
+# no-upload speedtest
+*/30 * 19-20 2 * /usr/bin/date >> /home/eridhonson/Documentos/Testes/speedtest-download.txt
+*/30 * 19-20 2 * /usr/bin/speedtest --single --simple --no-upload >> /home/eridhonson/Documentos/Testes/speedtest-download.txt
+# no-download speetest
+*/31 * 19-20 2 * /usr/bin/date >> /home/eridhonson/Documentos/Testes/speedtest-upload.txt
+*/31 * 19-20 2 * /usr/bin/speedtest --single --simple --no-download >> /home/eridhonson/Documentos/Testes/speedtest-upload.txt
+```

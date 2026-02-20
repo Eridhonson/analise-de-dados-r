@@ -1,0 +1,8 @@
+---
+title: "Análise inicial"
+author: "Eridhonson"
+format: pdf
+editor: visual
+---
+
+## 
